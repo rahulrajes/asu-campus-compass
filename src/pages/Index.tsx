@@ -1,7 +1,8 @@
-
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Send } from "lucide-react";
 import { ChatMessage } from "@/components/ChatMessage";
-import { ChatInput } from "@/components/ChatInput";
 import { SuggestedTopics } from "@/components/SuggestedTopics";
 
 interface Message {
@@ -12,18 +13,16 @@ interface Message {
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      text: "Hi! I'm your ASU Extracurriculars Assistant. I can help you discover and learn about clubs, organizations, and activities at Arizona State University. What would you like to know?",
+      text: "Hi! I'm your ASU Campus Compass. I can help you discover and learn about clubs, organizations, and activities at Arizona State University. What would you like to know?",
       isAi: true,
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSendMessage = async (message: string) => {
-    // Add user message
     setMessages((prev) => [...prev, { text: message, isAi: false }]);
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual AI integration)
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
@@ -41,19 +40,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-asu-gold/10 to-white">
-      <div className="container mx-auto max-w-4xl px-4">
+    <div className="min-h-[calc(100vh-6rem)] px-4">
+      <div className="container mx-auto max-w-4xl">
         <div className="py-8">
-          <h1 className="text-4xl font-bold text-asu-maroon mb-2 animate-fade-in">
-            ASU Activities Explorer
-          </h1>
-          <p className="text-gray-600 mb-8 animate-fade-in">
-            Discover and learn about extracurricular opportunities at Arizona State
-            University
-          </p>
-
-          <div className="bg-white/30 rounded-lg shadow-lg border border-gray-200 backdrop-blur-sm">
-            <div className="h-[60vh] overflow-y-auto p-4">
+          <div style={{ backgroundColor: '#E0E0E0' }} className="rounded-lg shadow-xl border border-gray-200 backdrop-blur-sm">
+            <div className="h-[calc(100vh-16rem)] overflow-y-auto p-4">
               {messages.map((message, index) => (
                 <ChatMessage
                   key={index}
@@ -67,7 +58,34 @@ const Index = () => {
                 </div>
               )}
             </div>
-            <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+            <div className="border-t border-gray-300">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const form = e.target as HTMLFormElement;
+                  const input = form.elements.namedItem("message") as HTMLInputElement;
+                  if (input.value.trim()) {
+                    handleSendMessage(input.value);
+                    input.value = "";
+                  }
+                }}
+                className="flex gap-2 p-4"
+              >
+                <Input
+                  name="message"
+                  placeholder="Ask about ASU extracurriculars..."
+                  className="flex-1 bg-white/80"
+                  disabled={isLoading}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-asu-maroon hover:bg-asu-maroon/90 text-white"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
